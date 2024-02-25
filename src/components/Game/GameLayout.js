@@ -4,14 +4,12 @@ import { Information } from "../Information/Information";
 export const GameLayout = (props) => {
   const {
     currentPlayer,
-    setCurrentPlayer,
     isGameEnded,
-    setIsGameEnded,
     isDraw,
-    setIsDraw,
     field,
     handleClickOnField,
     handleRestart,
+    winner,
   } = props;
 
   return (
@@ -21,6 +19,7 @@ export const GameLayout = (props) => {
         currentPlayer={currentPlayer}
         isGameEnded={isGameEnded}
         isDraw={isDraw}
+        winner={winner}
       />
       <button disabled={!(isDraw || isGameEnded)} onClick={handleRestart}>
         Начать заново

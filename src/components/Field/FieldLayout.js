@@ -1,7 +1,6 @@
 import styles from "./Field.module.css";
 
 export const FieldLayout = ({ field, handleClickOnField }) => {
-  console.log(field);
   return (
     <div className={styles.fieldWrapper}>
       {field.map((cell, index) => (

@@ -12,62 +12,60 @@ const WIN_PATTERNS = [
   [2, 4, 6],
 ];
 
-const initionalField = Array(9).fill("");
+const initialField = Array(9).fill("");
 
 export const Game = () => {
   const [currentPlayer, setCurrentPlayer] = useState("X");
   const [isGameEnded, setIsGameEnded] = useState(false);
   const [isDraw, setIsDraw] = useState(false);
-  const [field, setField] = useState(initionalField);
+  const [field, setField] = useState(initialField);
+  const [winner, setWinner] = useState(undefined);
 
   const handleClickOnField = (id) => {
-    if (isDraw || isGameEnded) {
-      return;
+    if (field[id] === "" && !isDraw && !isGameEnded) {
+      const newField = [...field];
+      newField[id] = currentPlayer;
+      setField(newField);
+      setCurrentPlayer((prevState) => (prevState === "X" ? "O" : "X"));
     }
-    const newField = [...field];
-    newField[id] = currentPlayer;
-    setField(newField);
   };
 
   const searchWinner = () => {
-    let winner;
-    WIN_PATTERNS.forEach((pattern) => {
+    for (let pattern of WIN_PATTERNS) {
       if (
+        field[pattern[0]] &&
         field[pattern[0]] === field[pattern[1]] &&
-        field[pattern[0]] === field[pattern[2]] &&
-        field[pattern[1]] === field[pattern[2]]
+        field[pattern[0]] === field[pattern[2]]
       ) {
-        winner = field[pattern[0]];
+        return field[pattern[0]];
       }
-    });
-    return winner;
-  };
-  useEffect(() => {
-    const winner = searchWinner();
-    if (winner) {
-      setIsGameEnded(true);
-    } else if (!winner && !field.some((f) => f === "")) {
-      setIsDraw(true);
-    } else if (!(isGameEnded || isDraw)) {
-      setCurrentPlayer((prevState) => (prevState === "X" ? "0" : "X"));
     }
-    console.log({ isDraw, isGameEnded, currentPlayer });
+  };
+
+  useEffect(() => {
+    const newWinner = searchWinner();
+    if (newWinner) {
+      setIsGameEnded(true);
+    }
+    if (!newWinner && !field.some((f) => f === "")) {
+      setIsDraw(true);
+    }
+    setWinner(newWinner);
   }, [field]);
 
   const handleRestart = () => {
     setCurrentPlayer("X");
+    setWinner(undefined);
     setIsGameEnded(false);
     setIsDraw(false);
-    setField(initionalField);
+    setField(initialField);
   };
   return (
     <GameLayout
       currentPlayer={currentPlayer}
-      setCurrentPlayer={setCurrentPlayer}
       isGameEnded={isGameEnded}
-      setIsGameEnded={setIsGameEnded}
+      winner={winner}
       isDraw={isDraw}
-      setIsDraw={setIsDraw}
       field={field}
       handleClickOnField={handleClickOnField}
       handleRestart={handleRestart}
